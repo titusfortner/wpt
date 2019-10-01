@@ -187,6 +187,8 @@ class Firefox(Browser):
 
         dest = self._get_dest(dest, channel)
 
+        filename = os.path.basename(dest)
+
         installer_path = self.download(dest, channel)
 
         try:
