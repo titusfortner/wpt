@@ -10,7 +10,6 @@
   const noopPolicy = {
     'createHTML': (s) => s,
     'createScriptURL': (s) => s,
-    'createURL': (s) => s,
     'createScript': (s) => s,
   };
 
@@ -65,23 +64,6 @@
     assert_false(TrustedTypes.isScriptURL(script3));
   }, 'TrustedTypePolicyFactory.isScriptURL requires the object to be created via policy.');
 
-  // isURL tests
-  test(t => {
-    const p = TrustedTypes.createPolicy('url', noopPolicy);
-    let url = p.createURL(INPUTS.URL);
-
-    assert_true(TrustedTypes.isURL(url));
-    let url2 = Object.create(url);
-
-    // instanceof can pass, but we rely on isScript
-    assert_true(url2 instanceof TrustedURL);
-    assert_false(TrustedTypes.isURL(url2));
-
-    let url3 = Object.assign({}, url, {toString: () => 'fake'});
-
-    assert_false(TrustedTypes.isURL(url3));
-  }, 'TrustedTypePolicyFactory.isURL requires the object to be created via policy.');
-
   // Test non-object parameters.
   test(t => {
     assert_false(TrustedTypes.isHTML(null));
@@ -94,11 +76,6 @@
     assert_false(TrustedTypes.isScript(0.5));
     assert_false(TrustedTypes.isScript('test'));
     assert_false(TrustedTypes.isScript({}));
-    assert_false(TrustedTypes.isURL(null));
-    assert_false(TrustedTypes.isURL(123));
-    assert_false(TrustedTypes.isURL(0.5));
-    assert_false(TrustedTypes.isURL('test'));
-    assert_false(TrustedTypes.isURL({}));
     assert_false(TrustedTypes.isScriptURL(null));
     assert_false(TrustedTypes.isScriptURL(123));
     assert_false(TrustedTypes.isScriptURL(0.5));
@@ -126,11 +103,6 @@
     assert_false(TrustedTypes.isScriptURL({}));
   }, 'TrustedTypePolicyFactory.isScriptURL cannot be redefined.');
 
-  test(t => {
-    try { TrustedTypes.isURL = () => 'fake'; } catch { }
-    assert_false(TrustedTypes.isURL({}));
-  }, 'TrustedTypePolicyFactory.isURL cannot be redefined.');
-
   // Redefinition tests, via Object.defineProperty.
   test(t => {
     try { Object.defineProperty(TrustedTypes, 'isHTML', () => 'fake'); } catch { }
@@ -146,10 +118,4 @@
     try { Object.defineProperty(TrustedTypes, 'isScriptURL', () => 'fake'); } catch { }
     assert_false(TrustedTypes.isScriptURL({}));
   }, 'TrustedTypePolicyFactory.isScriptURL cannot be redefined via definePropert.');
-
-  test(t => {
-    try { Object.defineProperty(TrustedTypes, 'isURL', () => 'fake'); } catch { }
-    assert_false(TrustedTypes.isURL({}));
-  }, 'TrustedTypePolicyFactory.isURL cannot be redefined via definePropert.');
-
 </script>

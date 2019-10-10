@@ -11,7 +11,6 @@ idl_test(
         TrustedHTML: ['window.TrustedTypes.createPolicy("SomeName1", { createHTML: s => s }).createHTML("A string")'],
         TrustedScript: ['window.TrustedTypes.createPolicy("SomeName2", { createScript: s => s }).createScript("A string")'],
         TrustedScriptURL: ['window.TrustedTypes.createPolicy("SomeName3", { createScriptURL: s => s }).createScriptURL("A string")'],
-        TrustedURL: ['window.TrustedTypes.createPolicy("SomeName4", { createURL: s => s }).createURL("A string")']
       });
     },
     'Trusted Types'
