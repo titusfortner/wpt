@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>RTCRtpReceiver-playoutDelayHint</title>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+
+<script>
+'use strict'
+
+// Test is based on the following draft:
+// https://henbos.github.io/webrtc-timing
+
+promise_test(async t => {
+  const pc = new RTCPeerConnection();
+  t.add_cleanup(() => pc.close());
+
+  pc.addTransceiver('audio', {direction:'recvonly'});
+
+  let [receiver] = pc.getReceivers();
+  assert_equals(receiver.track.kind, 'audio', 'receive audio');
+
+  assert_equals(receiver.playoutDelayHint, null,
+       'playoutDelayHint null by default');
+
+  receiver.playoutDelayHint = 0.5;
+  assert_equals(receiver.playoutDelayHint, 0.5,
+     'playoutDelayHint saves correct value');
+
+  receiver.playoutDelayHint = 0.0;
+  assert_equals(receiver.playoutDelayHint, 0.0,
+     'playoutDelayHint allows zero value');
+
+  receiver.playoutDelayHint = 20.5;
+  assert_equals(receiver.playoutDelayHint, 20.5,
+     'playoutDelayHint saves large value');
+
+  assert_throws('InvalidAccessError', () => {
+    receiver.playoutDelayHint = -0.5;
+  }, 'playoutDelayHint accepts only positive values and 0.0');
+  assert_equals(receiver.playoutDelayHint, 20.5,
+     'playoutDelayHint returns last valid value');
+
+  receiver.playoutDelayHint = null;
+  assert_equals(receiver.playoutDelayHint, null,
+     'playoutDelayHint resets value to null');
+}, 'RTCRtpReceiver playoutDelayHint validation');
+</script>
